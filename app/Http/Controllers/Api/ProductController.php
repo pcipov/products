@@ -11,9 +11,15 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::paginate(10);
+        if ( $search = $request->input('search') ) {
+            $products = Product::where('name', 'LIKE', '%' . $search . '%')->paginate(10);
+        } else {
+            $products = Product::paginate(10);
+        }
+        $products->appends($request->input());
+
         return response()->json($products, 200);
     }
 
