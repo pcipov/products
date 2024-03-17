@@ -3,18 +3,32 @@
         data() {
             return {
                 search: '',
-                products: [
-                    { id: 1, name: 'sdaasdsadasd' },
-                    { id: 2, name: 'xczvz' },
-                    { id: 3, name: 'sdfsdf' },
-                    { id: 4, name: 'asdasd' },
-                    { id: 5, name: 'sdaasdzxczxc\sadasd' },
-                ]
+                products: [],
+                noProduct: false
             }
         },
         methods: {
             getProducts() {
-                console.log(this.search);
+                if(this.search.length > 2) {
+                    axios
+                        .get('/api/products?search=' + encodeURI(this.search))
+                        .then( response => {
+                            console.log(response);
+                            if(response.data.data.length) {
+                                this.products = response.data.data;
+                                this.noProduct = false;
+                            } else {
+                                this.products = [];
+                                this.noProduct = true;
+                            }
+                        })
+                        .catch( error => {
+                            console.log(error);
+                        });
+                } else {
+                    this.products = [];
+                    this.noProduct = false;
+                }
             }
         },
         setup() {
@@ -26,11 +40,12 @@
 
 <template>
     <form action="#" @submit.prevent="getProducts()">
-        <input type="text" v-model="search">
+        <input type="text" v-model="search" v-on:keyup="getProducts()" class="form-control" placeholder="product name">
     </form>
     <ul>
         <li v-for="product in products" :key="product.id">{{product.name}}</li>
     </ul>
+    <small v-if="products.length==0 && search.length>2">No products found</small>
 </template>
 
 <style lang="scss" scoped>
