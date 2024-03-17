@@ -17,11 +17,17 @@ class ProductSeeder extends Seeder
         Product::truncate();
         $products = [];
         $xml = Storage::get('import/feed.xml');
-        preg_match_all('/<g:title>(.*?)<\/g:title>/', $xml, $matches);
+        $xml = strtr($xml, ["\n" => '']);
+        preg_match_all('/<item>(.*?)<\/item>/', $xml, $matches);
         foreach($matches[1] as $match) {
-            $products[] = [
-                'name' => $match,
-            ];
+            preg_match('/<g:title>(.*?)<\/g:title>/', $match, $matchTitle);
+            preg_match('/<url>(.*?)<\/url>/', $match, $matchUrl);
+            if($matchTitle && $matchUrl) {
+                $products[] = [
+                    'name' => $matchTitle[1],
+                    'url' => $matchUrl[1],
+                ];
+            }
         }
         Product::insert($products);
     }
