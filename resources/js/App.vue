@@ -43,7 +43,7 @@
         <input type="text" v-model="search" v-on:keyup="getProducts()" class="form-control" placeholder="product name">
     </form>
     <ul>
-        <li v-for="product in products" :key="product.id">{{product.name}}</li>
+        <li v-for="product in products" :key="product.id">{{product.name.replace('&amp;amp;', '&').replace('&amp;quot;', '"')}}</li>
     </ul>
     <small v-if="products.length==0 && search.length>2">No products found</small>
 </template>
