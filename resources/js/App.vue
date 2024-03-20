@@ -4,21 +4,27 @@
             return {
                 search: '',
                 products: [],
+                next: null,
                 noProduct: false
             }
         },
         methods: {
-            getProducts() {
+            getProducts(url) {
                 if(this.search.length > 2) {
                     axios
-                        .get('/api/products?search=' + encodeURI(this.search))
+                        .get(url ? url : '/api/products?search=' + encodeURI(this.search))
                         .then( response => {
-                            console.log(response);
                             if(response.data.data.length) {
-                                this.products = response.data.data;
+                                if(response.data.current_page>1) {
+                                    this.products = this.products.concat(this.products, response.data.data);
+                                } else {
+                                    this.products = response.data.data;
+                                }
+                                this.next=response.data.next_page_url
                                 this.noProduct = false;
                             } else {
                                 this.products = [];
+                                this.next = null;
                                 this.noProduct = true;
                             }
                         })
@@ -27,6 +33,7 @@
                         });
                 } else {
                     this.products = [];
+                    this.next = null;
                     this.noProduct = false;
                 }
             }
@@ -38,29 +45,39 @@
     }
 </script>
 
+
 <template>
-    <form action="#" @submit.prevent="getProducts()">
+    <form action="#" @submit.prevent="getProducts(null)">
         <input type="text" v-model="search" v-on:keyup="getProducts()" class="form-control" placeholder="product name">
     </form>
     <ul>
         <li v-for="product in products" :key="product.id">
-            <a :href="product.url" target="_blank">{{product.name.replace('&amp;amp;', '&').replace('&amp;quot;', '"')}}</a>
+            <a :href="product.url" target="_blank" v-html="product.name"></a>
         </li>
     </ul>
-    <small v-if="products.length==0 && search.length>2">No products found</small>
+    <div class="text-center">
+        <small v-if="products.length==0 && search.length>2">No products found</small>
+        <a href="#" v-show="next" @click="getProducts(next)">next</a>
+    </div>
 </template>
 
-<style lang="scss" scoped>
+
+<style lang="scss">
+    a {
+        text-decoration: none;
+        color: black;
+    }
     ul {
         list-style: none;
         margin: 20px 10px;
         padding: 0;
         li {
             a {
-                text-decoration: none;
-                color: black;
                 &:hover {
                     color: blue;
+                }
+                span {
+                    color: red;
                 }
             }
         }
