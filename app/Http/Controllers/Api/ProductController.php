@@ -15,6 +15,9 @@ class ProductController extends Controller
     {
         if ( $search = $request->input('search') ) {
             $products = Product::where('name', 'LIKE', '%' . $search . '%')->paginate(10);
+            foreach($products as &$product) {
+                $product->name = strtr($product->name, [$search => '<span>' . $search . '</span>']);
+            }
         } else {
             $products = Product::paginate(10);
         }
