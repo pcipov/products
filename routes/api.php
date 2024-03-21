@@ -18,4 +18,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('products', \App\Http\Controllers\Api\ProductController::class)->only('index');
+Route::get('getProducts', [\App\Http\Controllers\Api\ProductController::class, 'getProducts']);
+Route::post('addToHistory', [\App\Http\Controllers\Api\HistoryController::class, 'addToHistory']);
+Route::get('getHistory', [\App\Http\Controllers\Api\HistoryController::class, 'getHistory']);

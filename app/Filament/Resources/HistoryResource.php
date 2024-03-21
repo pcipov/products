@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
+use App\Filament\Resources\HistoryResource\Pages;
+use App\Filament\Resources\HistoryResource\RelationManagers;
+use App\Models\History;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ProductResource extends Resource
+class HistoryResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    protected static ?string $model = History::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,10 +23,10 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('cookie')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('url')
+                Forms\Components\TextInput::make('search')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -36,10 +36,10 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                Tables\Columns\TextColumn::make('cookie')
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('url')
+                Tables\Columns\TextColumn::make('search')
                     ->sortable()
                     ->searchable(),
             ])
@@ -66,9 +66,9 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ListHistories::route('/'),
+            'create' => Pages\CreateHistory::route('/create'),
+            'edit' => Pages\EditHistory::route('/{record}/edit'),
         ];
     }
 }
