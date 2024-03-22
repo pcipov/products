@@ -65,9 +65,7 @@
                     });
             },
             useHistory(event) {
-                let el = document.getElementById("search");
-                el.value = event.target.value;
-                el.dispatchEvent(new Event('input'));
+                this.search = event.target.value;
                 this.getProducts();
                 document.getElementById("history").value = 0;
             },
@@ -84,12 +82,7 @@
             },
         },
         beforeMount() {
-            this.history = this.getHistory();
-            console.log(this.cookie)
-        },
-        setup() {
-            const search = '';
-            return { search }
+            this.getHistory();
         },
     }
 </script>
